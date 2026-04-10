@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finnisch Lernen v2.9.7</title>
+    <style>
+        :root { 
+            --fi-blue: #003580; 
+            --fi-white: #FFFFFF;
+            --fi-dark-bg: #001a3d;
+            --btn-height: 38px; 
+        }
+        body {
+            background: #000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            min-height: 100vh; margin: 0; font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .app-container {
+            width: 320px; margin-top: 18px; 
+            background: radial-gradient(circle at center, var(--fi-dark-bg) 0%, #000 100%);
+            border: 4px solid var(--fi-blue); border-radius: 60px; overflow: hidden;
+            display: flex; flex-direction: column; padding-top: 15px; padding-bottom: 25px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9);
+        }
+        header { text-align: center; position: relative; padding-bottom: 5px; }
+        .flag-icon { font-size: 1.4em; position: absolute; top: 12px; }
+        .flag-l { left: 30px; } .flag-r { right: 30px; }
+        header h1 { color: var(--fi-white); margin: 0; font-size: 1.6em; text-transform: uppercase; letter-spacing: 2px; }
+        .sub-header { color: var(--fi-blue); font-size: 0.8em; text-transform: uppercase; font-weight: bold; background: white; display: inline-block; padding: 2px 10px; border-radius: 5px; margin-top: 5px; }
+        .version-info { color: var(--fi-white); font-size: 0.65em; opacity: 0.5; margin-top: 5px; }
+        .divider { width: 65%; height: 2px; background: linear-gradient(90deg, var(--fi-blue), var(--fi-white), var(--fi-blue)); margin: 10px auto; }
+
+        .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 0 15px 15px 15px; }
+        .premium-btn {
+            background: rgba(255,255,255,0.05); color: var(--fi-white); border: 1px solid var(--fi-blue);
+            height: var(--btn-height); font-size: 0.62em; font-weight: bold; border-radius: 8px; cursor: pointer; text-transform: uppercase;
+        }
+        .premium-btn:active { background: var(--fi-blue); }
+
+        .flashcard {
+            width: 280px; height: 160px; background: linear-gradient(145deg, #111, #001a3d);
+            border: 2px solid var(--fi-white); border-radius: 35px; margin: 10px auto;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; cursor: pointer; position: relative;
+        }
+        .category-label { position: absolute; top: 12px; left: 20px; color: var(--fi-blue); font-size: 0.55em; font-weight: bold; text-transform: uppercase; background: white; padding: 1px 5px; border-radius: 3px;}
+        #phrase-fi { font-size: 1.25em; color: var(--fi-white); font-weight: bold; margin-bottom: 2px; padding: 0 10px; }
+        #phrase-phonetic { font-size: 0.75em; color: #a0c4ff; font-style: italic; margin-bottom: 6px; }
+        #phrase-de { font-size: 0.85em; color: #fff; opacity: 0.6; }
+        .card-counter-inside { position: absolute; bottom: 12px; right: 25px; color: var(--fi-white); font-size: 0.65em; }
+
+        .controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 5px 35px; }
+        .ctrl-btn { background: #000; color: var(--fi-white); border: 1px solid var(--fi-blue); height: var(--btn-height); border-radius: 15px; font-weight: bold; cursor: pointer; font-size: 0.65em; text-transform: uppercase; }
+        .play-btn { background: var(--fi-blue); color: #fff; border: none; }
+        
+        .menu-footer { width: 180px; margin: 25px auto 5px auto; background: var(--fi-white); color: var(--fi-blue); height: 38px; display: flex; justify-content: center; align-items: center; font-weight: 900; border-radius: 20px; cursor: pointer; text-transform: uppercase; font-size: 0.8em; }
+        .outer-footer { margin: 15px 0 30px 0; color: var(--fi-blue); font-size: 0.75em; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <div class="flag-icon flag-l">🇫🇮</div>
+        <h1>Finnisch</h1>
+        <div class="flag-icon flag-r">🇫🇮</div>
+        <div class="sub-header">Premium Lern-App</div>
+        <div class="version-info">Version 2.9.7. </div>
+        <div class="divider"></div>
+    </header>
+
+    <div class="menu-grid">
+        <button class="premium-btn" onclick="setCategory('basis')">Basis</button>
+        <button class="premium-btn" onclick="setCategory('alltag')">Alltag</button>
+        <button class="premium-btn" onclick="setCategory('reise')">Reise</button>
+        <button class="premium-btn" onclick="setCategory('essen')">Essen</button>
+        <button class="premium-btn" onclick="setCategory('fragen')">Fragen</button>
+        <button class="premium-btn" onclick="setCategory('a1')">A1 Level</button>
+        <button class="premium-btn" onclick="setCategory('idiome')">Redewendung</button>
+        <button class="premium-btn" onclick="setCategory('a2')">A2 Level</button> 
+        <button class="premium-btn" onclick="setCategory('zahlen')">Zahlen</button> 
+    </div>
+
+    <div class="flashcard" onclick="nextCardWithAudio()">
+        <div class="category-label" id="cat-label">START</div>
+        <div id="phrase-fi">Tervetuloa</div>
+        <div id="phrase-phonetic">[ter-ve-tu-lo-a]</div>
+        <div id="phrase-de">Willkommen</div>
+        <div class="card-counter-inside" id="counter">1 / 1</div>
+    </div>
+
+    <div class="controls">
+        <button class="ctrl-btn" onclick="prevCard()">Zurück</button>
+        <button class="ctrl-btn play-btn" onclick="speak()">Hören</button>
+        <button class="ctrl-btn" onclick="nextCardWithAudio()">Vor</button>
+    </div>
+
+    <div class="menu-footer" onclick="setCategory('basis')">Start/Reset</div>
+</div>
+<div class="outer-footer">(c) 2026 Finnisch v. 2.9.7. </div>
+
+<script>
+    const data = {
+        basis: [
+            {fi: "Moi", ph: "[moi]", de: "Hallo"}, {fi: "Kiitos", ph: "[kee-tos]", de: "Danke"},
+            {fi: "Ole hyvä", ph: "[o-le hü-vä]", de: "Bitte"}, {fi: "Kyllä", ph: "[kül-lä]", de: "Ja"},
+            {fi: "Ei", ph: "[ei]", de: "Nein"}, {fi: "Anteeksi", ph: "[an-teek-si]", de: "Entschuldigung"},
+            {fi: "Näkemiin", ph: "[nä-ke-meen]", de: "Auf Wiedersehen"}, {fi: "Hyvää huomenta", ph: "[hü-vää huo-men-ta]", de: "Guten Morgen"},
+            {fi: "Hyvää päivää", ph: "[hü-vää päi-vää]", de: "Guten Tag"}, {fi: "Hyvää iltaa", ph: "[hü-vää il-taa]", de: "Guten Abend"},
+            {fi: "Hyvää yötä", ph: "[hü-vää üö-tä]", de: "Gute Nacht"}, {fi: "Hauska tutustua", ph: "[hau-ska tu-tus-tu-a]", de: "Freut mich, dich kennenzulernen"},
+            {fi: "Mitä kuuluu?", ph: "[mi-tä kuu-luu]", de: "Wie geht es dir?"}, {fi: "Hyvää, kiitos", ph: "[hü-vää kee-tos]", de: "Gut, danke"},
+            {fi: "Tervetuloa", ph: "[ter-ve-tu-lo-a]", de: "Willkommen"}, {fi: "Puhutko englantia?", ph: "[pu-hut-ko eng-lan-ti-a]", de: "Sprichst du Englisch?"},
+            {fi: "En puhu suomea", ph: "[en pu-hu suo-me-a]", de: "Ich spreche kein Finnisch"}, {fi: "Ymmärrän", ph: "[üm-mär-rän]", de: "Ich verstehe"},
+            {fi: "En ymmärrä", ph: "[en üm-mär-rä]", de: "Ich verstehe nicht"}, {fi: "Oletko valmis?", ph: "[o-let-ko val-mis]", de: "Bist du bereit?"}
+        ],
+        alltag: [
+            {fi: "Kello on paljon", ph: "[kel-lo on pal-jon]", de: "Es ist spät"}, {fi: "Minulla on nälkä", ph: "[mi-nul-la on näl-kä]", de: "Ich habe Hunger"},
+            {fi: "Minulla on jano", ph: "[mi-nul-la on ja-no]", de: "Ich habe Durst"}, {fi: "Olen väsynyt", ph: "[o-len vä-sü-nüt]", de: "Ich bin müde"},
+            {fi: "Menen kotiin", ph: "[me-nen ko-teen]", de: "Ich gehe nach Hause"}, {fi: "Mitä teet?", ph: "[mi-tä teet]", de: "Was machst du?"},
+            {fi: "Olen töissä", ph: "[o-len töis-sä]", de: "Ich bin auf der Arbeit"}, {fi: "Nähdään pian", ph: "[näh-dään pi-an]", de: "Bis bald"},
+            {fi: "Tänään", ph: "[tä-nään]", de: "Heute"}, {fi: "Huomenna", ph: "[huo-men-na]", de: "Morgen"},
+            {fi: "Eilen", ph: "[ei-len]", de: "Gestern"}, {fi: "Rakastan sinua", ph: "[ra-kas-tan si-nu-a]", de: "Ich liebe dich"},
+            {fi: "Minulla on kiire", ph: "[mi-nul-la on kee-re]", de: "Ich habe es eilig"}, {fi: "Se on totta", ph: "[se on tot-ta]", de: "Das stimmt"},
+            {fi: "Ei se mitään", ph: "[ei se mi-tään]", de: "Das macht nichts"}, {fi: "Ehkä", ph: "[eh-kä]", de: "Vielleicht"},
+            {fi: "Tietenkin", ph: "[tie-ten-kin]", de: "Natürlich"}, {fi: "Olet oikeassa", ph: "[o-let oi-ke-as-sa]", de: "Du hast recht"},
+            {fi: "Mikä sinun nimesi on?", ph: "[mi-kä si-nun ni-me-si on]", de: "Wie heißt du?"}, {fi: "Hauskaa päivää", ph: "[hau-skaa päi-vää]", de: "Einen schönen Tag"}
+        ],
+        reise: [
+            {fi: "Missä on vessa?", ph: "[mis-sä on ves-sa]", de: "Wo ist die Toilette?"}, {fi: "Missä on hotelli?", ph: "[mis-sä on ho-tel-li]", de: "Wo ist das Hotel?"},
+            {fi: "Apua!", ph: "[a-pu-a]", de: "Hilfe!"}, {fi: "Juna-asema", ph: "[ju-na a-se-ma]", de: "Bahnhof"},
+            {fi: "Lentokenttä", ph: "[len-to-kent-tä]", de: "Flughafen"}, {fi: "Pankkiautomaatti", ph: "[pank-ki-au-to-maat-ti]", de: "Geldautomat"},
+            {fi: "Kauppa", ph: "[kaup-pa]", de: "Laden / Geschäft"}, {fi: "Oikealle", ph: "[oi-ke-al-le]", de: "Nach rechts"},
+            {fi: "Vasemmalle", ph: "[va-sem-mal-le]", de: "Nach links"}, {fi: "Suoraan", ph: "[suo-raan]", de: "Geradeaus"},
+            {fi: "Kartta", ph: "[kart-ta]", de: "Karte"}, {fi: "Passi", ph: "[pas-si]", de: "Reisepass"},
+            {fi: "Matkalaukku", ph: "[mat-ka-lauk-ku]", de: "Koffer"}, {fi: "Bussi", ph: "[bus-si]", de: "Bus"},
+            {fi: "Taksi", ph: "[tak-si]", de: "Taxi"}, {fi: "Pysäkki", ph: "[pü-säk-ki]", de: "Haltestelle"},
+            {fi: "Kuinka kaukana se on?", ph: "[kuin-ka kau-ka-na se on]", de: "Wie weit ist es?"}, {fi: "Voitteko auttaa?", ph: "[voit-te-ko aut-taa]", de: "Können Sie helfen?"},
+            {fi: "Etsin tätä paikkaa", ph: "[et-sin tä-tä paik-kaa]", de: "Ich suche diesen Ort"}, {fi: "Olen eksynyt", ph: "[o-len ek-sü-nüt]", de: "Ich habe mich verirrt"}
+        ],
+        essen: [
+            {fi: "Vettä, kiitos", ph: "[vet-tä kee-tos]", de: "Wasser, bitte"}, {fi: "Kahvi", ph: "[kah-vi]", de: "Kaffee"},
+            {fi: "Tee", ph: "[tee]", de: "Tee"}, {fi: "Maito", ph: "[mai-to]", de: "Milch"},
+            {fi: "Leipä", ph: "[lei-pä]", de: "Brot"}, {fi: "Ruoka oli hyvää", ph: "[ruo-ka o-li hü-vää]", de: "Das Essen war gut"},
+            {fi: "Lasku, kiitos", ph: "[las-ku kee-tos]", de: "Die Rechnung, bitte"}, {fi: "Ruokalista", ph: "[ruo-ka-lis-ta]", de: "Speisekarte"},
+            {fi: "Aamiainen", ph: "[aa-miai-nen]", de: "Frühstück"}, {fi: "Lounas", ph: "[lou-nas]", de: "Mittagessen"},
+            {fi: "Illallinen", ph: "[il-lal-li-nen]", de: "Abendessen"}, {fi: "Kasvissyöjä", ph: "[kas-vis-süö-jä]", de: "Vegetarier"},
+            {fi: "Onko se tulista?", ph: "[on-ko se tu-lis-ta]", de: "Ist es scharf?"}, {fi: "Tuoppi olutta", ph: "[tuop-pi o-lut-ta]", de: "Ein Glas Bier"},
+            {fi: "Viini", ph: "[vee-ni]", de: "Wein"}, {fi: "Sokeri", ph: "[so-ke-ri]", de: "Zucker"},
+            {fi: "Suola", ph: "[suo-la]", de: "Salz"}, {fi: "Hyvää ruokahalua!", ph: "[hü-vää ruo-ka-ha-lu-a]", de: "Guten Appetit!"},
+            {fi: "Olen allerginen", ph: "[o-len al-ler-gi-nen]", de: "Ich bin allergisch"}, {fi: "Kippis!", ph: "[kip-pis]", de: "Prost!"}
+        ],
+        fragen: [
+            {fi: "Mikä?", ph: "[mi-kä]", de: "Was?"}, {fi: "Kuka?", ph: "[ku-ka]", de: "Wer?"},
+            {fi: "Missä?", ph: "[mis-sä]", de: "Wo?"}, {fi: "Miksi?", ph: "[mik-si]", de: "Warum?"},
+            {fi: "Milloin?", ph: "[mil-loin]", de: "Wann?"}, {fi: "Miten?", ph: "[mi-ten]", de: "Wie?"},
+            {fi: "Kuinka monta?", ph: "[kuin-ka mon-ta]", de: "Wie viele?"}, {fi: "Paljonko se maksaa?", ph: "[pal-jon-ko se mak-saa]", de: "Wie viel kostet es?"},
+            {fi: "Mitä kello on?", ph: "[mi-tä kel-lo on]", de: "Wie spät ist es?"}, {fi: "Mihin menet?", ph: "[mi-hin me-net]", de: "Wohin gehst du?"},
+            {fi: "Mistä olet kotoisin?", ph: "[mis-tä o-let ko-toi-sin]", de: "Woher kommst du?"}, {fi: "Voitko toistaa?", ph: "[voit-ko tois-taa]", de: "Kannst du das wiederholen?"},
+            {fi: "Voitko puhua hitaammin?", ph: "[voit-ko pu-hu-a hi-taam-min]", de: "Kannst du langsamer sprechen?"}, {fi: "Mikä tämä on?", ph: "[mi-kä tä-mä on]", de: "Was ist das?"},
+            {fi: "Oletko varma?", ph: "[o-let-ko var-ma]", de: "Bist du sicher?"}, {fi: "Mitä se tarkoittaa?", ph: "[mi-tä se tar-koit-taa]", de: "Was bedeutet das?"},
+            {fi: "Tiedätkö?", ph: "[tie-dät-kö]", de: "Weißt du es?"}, {fi: "Mitä tapahtui?", ph: "[mi-tä ta-pah-tui]", de: "Was ist passiert?"},
+            {fi: "Onko sinulla kysyttävää?", ph: "[on-ko si-nul-la kü-süt-tä-vää]", de: "Hast du Fragen?"}, {fi: "Saanko kysyä?", ph: "[saan-ko kü-sü-ä]", de: "Darf ich fragen?"}
+        ],
+        a1: [
+            {fi: "Pieni", ph: "[pie-ni]", de: "Klein"}, {fi: "Suuri", ph: "[suu-ri]", de: "Groß"},
+            {fi: "Kaunis", ph: "[kau-nis]", de: "Schön"}, {fi: "Uusi", ph: "[uu-si]", de: "Neu"},
+            {fi: "Vanha", ph: "[van-ha]", de: "Alt"}, {fi: "Hyvä", ph: "[hü-vä]", de: "Gut"},
+            {fi: "Huono", ph: "[huo-no]", de: "Schlecht"}, {fi: "Kallis", ph: "[kal-lis]", de: "Teuer"},
+            {fi: "Halpa", ph: "[hal-pa]", de: "Billig"}, {fi: "Kylmä", ph: "[kül-mä]", de: "Kalt"},
+            {fi: "Kuuma", ph: "[kuu-ma]", de: "Heiß"}, {fi: "Nopea", ph: "[no-pe-a]", de: "Schnell"},
+            {fi: "Hidas", ph: "[hi-das]", de: "Langsam"}, {fi: "Vaikea", ph: "[vai-ke-a]", de: "Schwer"},
+            {fi: "Helppo", ph: "[help-po]", de: "Leicht"}, {fi: "Nuori", ph: "[nuo-ri]", de: "Jung"},
+            {fi: "Rikas", ph: "[ri-kas]", de: "Reich"}, {fi: "Köyhä", ph: "[köy-hä]", de: "Arm"},
+            {fi: "Hauska", ph: "[hau-ska]", de: "Lustig"}, {fi: "Surullinen", ph: "[su-rul-li-nen]", de: "Traurig"}
+        ],
+        idiome: [
+            {fi: "Sataa kuin saavista kaatamalla", ph: "[sa-taa kuin saa-vis-ta...]", de: "Es regnet wie aus Eimern"}, {fi: "Olla jäniksen selässä", ph: "[ol-la jä-nik-sen...]", de: "In Eile sein"},
+            {fi: "Parempi pyy pivossa", ph: "[pa-rem-pi püüp...]", de: "Besser ein Spatz in der Hand"}, {fi: "Heittää kirves kaivoon", ph: "[heit-tää kir-ves...]", de: "Die Flinte ins Korn werfen"},
+            {fi: "Kiertää kuin kissa kuumaa puuroa", ph: "[kier-tää kuin kis-sa...]", de: "Wie die Katze um den heißen Brei"}, {fi: "Mennä päin mäntyä", ph: "[men-nä päin män-tü-ä]", de: "Schiefgehen"},
+            {fi: "Olla peukalo keskellä kämmentä", ph: "[ol-la peu-ka-lo...]", de: "Zwei linke Hände haben"}, {fi: "Viedä saunan taakse", ph: "[vie-dä sau-nan...]", de: "Jdn. belehren/bestrafen"},
+            {fi: "Puhua läpiä päähänsä", ph: "[pu-hu-a lä-pi-ä...]", de: "Unsinn reden"}, {fi: "Nostaa kissa pöydälle", ph: "[nos-taa kis-sa...]", de: "Die Sache ansprechen"},
+            {fi: "Aika rientää", ph: "[ai-ka rien-tää]", de: "Die Zeit fliegt"}, {fi: "Kuin kaksi marjaa", ph: "[kuin kak-si mar-jaa]", de: "Wie ein Ei dem anderen"},
+            {fi: "Sopii kuin nyrkki silmään", ph: "[so-pii kuin nürk-ki...]", de: "Passt wie die Faust aufs Auge"}, {fi: "Tehdä kärpäsestä härkänen", ph: "[teh-dä kär-pä-ses-tä...]", de: "Aus einer Mücke einen Elefanten machen"},
+            {fi: "Oma koti kullan kallis", ph: "[o-ma ko-ti...]", de: "Eigener Herd ist Goldes wert"}, {fi: "Hiljaa hyvää tulee", ph: "[hil-jaa hü-vää tu-lee]", de: "Gut Ding will Weile haben"},
+            {fi: "Aamun torkku, illan virkku", ph: "[aa-mun tork-ku...]", de: "Morgens müde, abends wach"}, {fi: "Se on siinä", ph: "[se on see-nä]", de: "Das war's / Geschafft"},
+            {fi: "Ei hätää", ph: "[ei hä-tää]", de: "Keine Sorge"}, {fi: "Loppu hyvin, kaikki hyvin", ph: "[lop-pu hü-vin...]", de: "Ende gut, alles gut"}
+        ],
+        a2: [
+            {fi: "Kaupunki", ph: "[kau-pun-ki]", de: "Stadt"}, {fi: "Luonto", ph: "[luon-to]", de: "Natur"},
+            {fi: "Metsä", ph: "[met-sä]", de: "Wald"}, {fi: "Järvi", ph: "[jär-vi]", de: "See"},
+            {fi: "Meri", ph: "[me-ri]", de: "Meer"}, {fi: "Aurinko", ph: "[au-rin-ko]", de: "Sonne"},
+            {fi: "Sää", ph: "[sää]", de: "Wetter"}, {fi: "Lumi", ph: "[lu-mi]", de: "Schnee"},
+            {fi: "Työ", ph: "[tüö]", de: "Arbeit"}, {fi: "Koulu", ph: "[kou-lu]", de: "Schule"},
+            {fi: "Perhe", ph: "[per-he]", de: "Familie"}, {fi: "Ystävä", ph: "[üs-tä-vä]", de: "Freund"},
+            {fi: "Aika", ph: "[ai-ka]", de: "Zeit"}, {fi: "Raha", ph: "[ra-ha]", de: "Geld"},
+            {fi: "Matka", ph: "[mat-ka]", de: "Reise"}, {fi: "Elämä", ph: "[e-lä-mä]", de: "Leben"},
+            {fi: "Kirja", ph: "[kir-ja]", de: "Buch"}, {fi: "Musiikki", ph: "[mu-siik-ki]", de: "Musik"},
+            {fi: "Urheilu", ph: "[ur-hei-lu]", de: "Sport"}, {fi: "Terveys", ph: "[ter-veüs]", de: "Gesundheit"}
+        ],
+        zahlen: [
+            {fi: "Yksi", ph: "[ük-si]", de: "1"}, {fi: "Kaksi", ph: "[kak-si]", de: "2"},
+            {fi: "Kolme", ph: "[kol-me]", de: "3"}, {fi: "Neljä", ph: "[nel-jä]", de: "4"},
+            {fi: "Viisi", ph: "[vee-si]", de: "5"}, {fi: "Kuusi", ph: "[kuu-si]", de: "6"},
+            {fi: "Seitsemän", ph: "[seit-se-män]", de: "7"}, {fi: "Kahdeksan", ph: "[kah-dek-san]", de: "8"},
+            {fi: "Yhdeksän", ph: "[üh-dek-sän]", de: "9"}, {fi: "Kymmenen", ph: "[küm-me-nen]", de: "10"},
+            {fi: "Yksitoista", ph: "[ük-si-tois-ta]", de: "11"}, {fi: "Kaksitoista", ph: "[kak-si-tois-ta]", de: "12"},
+            {fi: "Kaksikymmentä", ph: "[kak-si-küm-men-tä]", de: "20"}, {fi: "Kolmekymmentä", ph: "[kol-me-küm-men-tä]", de: "30"},
+            {fi: "Sata", ph: "[sa-ta]", de: "100"}, {fi: "Tuhat", ph: "[tu-hat]", de: "1000"},
+            {fi: "Ensimmäinen", ph: "[en-sim-mäi-nen]", de: "Erster"}, {fi: "Toinen", ph: "[toi-nen]", de: "Zweiter"},
+            {fi: "Puoli", ph: "[puo-li]", de: "Halb"}, {fi: "Nolla", ph: "[nol-la]", de: "Null"}
+        ]
+    };
+
+    let currentCategory = 'basis';
+    let currentIndex = 0;
+
+    function updateCard() {
+        const item = data[currentCategory][currentIndex];
+        document.getElementById('phrase-fi').innerText = item.fi;
+        document.getElementById('phrase-phonetic').innerText = item.ph;
+        document.getElementById('phrase-de').innerText = item.de;
+        document.getElementById('cat-label').innerText = currentCategory.toUpperCase();
+        document.getElementById('counter').innerText = `${currentIndex + 1} / ${data[currentCategory].length}`;
+    }
+
+    function setCategory(cat) {
+        currentCategory = cat;
+        currentIndex = 0;
+        updateCard();
+        speak(); // Liest vor, wenn Button geklickt wird
+    }
+
+    function nextCardWithAudio() {
+        currentIndex = (currentIndex + 1) % data[currentCategory].length;
+        updateCard();
+        speak(); // Liest vor, wenn Karte geklickt wird
+    }
+
+    function prevCard() {
+        currentIndex = (currentIndex - 1 + data[currentCategory].length) % data[currentCategory].length;
+        updateCard();
+        speak();
+    }
+
+    function speak() {
+        const text = data[currentCategory][currentIndex].fi;
+        const msg = new SpeechSynthesisUtterance(text);
+        msg.lang = 'fi-FI';
+        msg.rate = 0.9;
+        window.speechSynthesis.speak(msg);
+    }
+
+    updateCard();
+</script>
+</body>
+</html>
